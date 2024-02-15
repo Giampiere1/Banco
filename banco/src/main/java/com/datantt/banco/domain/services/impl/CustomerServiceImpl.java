@@ -11,6 +11,7 @@ import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.datantt.banco.domain.dtos.CustomerDTO;
@@ -24,12 +25,14 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
 
     @Override
+    @Cacheable(value = "customerCache")
     public Observable<List<CustomerDTO>> getList() {
         return Observable.defer(() -> Observable.just(customerRepository.findAll()));
     }
 
 
     @Override
+    @Cacheable(value = "customerCache")
     public Single<CustomerDTO> getDetail(String id) {
         return Single.create(singleSubscriber -> {
             Optional<CustomerDTO> customerDto = customerRepository.findById(id);
